@@ -58,6 +58,7 @@ type MediaDB interface {
 	GetDeletedMediaByTVDBID(ctx context.Context, tvdbID int32) ([]Media, error)
 	SetMediaProtectedUntil(ctx context.Context, mediaID uint, protectedUntil *time.Time) error
 	MarkMediaAsUnkeepable(ctx context.Context, mediaID uint) error
+	ForceSweepMedia(ctx context.Context, mediaID uint, deleteAt time.Time) error
 	DeleteMediaItem(ctx context.Context, media *Media) error
 }
 

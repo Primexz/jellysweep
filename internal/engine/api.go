@@ -257,6 +257,27 @@ func (e *Engine) MarkMediaAsUnkeepable(ctx context.Context, mediaID uint, adminI
 	return nil
 }
 
+// ForceSweepMedia marks a media item as due for deletion on the next cleanup run.
+func (e *Engine) ForceSweepMedia(ctx context.Context, mediaID uint, adminID uint) error {
+	media, err := e.db.GetMediaItemByID(ctx, mediaID)
+	if err != nil {
+		log.Error("Failed to get media item by ID", "mediaID", mediaID, "error", err)
+		return fmt.Errorf("database error: %w", err)
+	}
+
+	if err := e.db.ForceSweepMedia(ctx, media.ID, time.Now()); err != nil {
+		log.Error("Failed to queue media for force sweep", "mediaID", mediaID, "error", err)
+		return fmt.Errorf("failed to queue media for force sweep: %w", err)
+	}
+
+	if err := e.CreateForceSweepEvent(ctx, adminID, media); err != nil {
+		log.Error("Failed to create force sweep event", "mediaID", mediaID, "error", err)
+		return fmt.Errorf("failed to create force sweep event: %w", err)
+	}
+
+	return nil
+}
+
 // MarkMediaAsKeepForever removes the media item from the database and adds an ignore tag.
 func (e *Engine) MarkMediaAsKeepForever(ctx context.Context, mediaID uint, adminID uint) error {
 	media, err := e.db.GetMediaItemByID(ctx, mediaID)

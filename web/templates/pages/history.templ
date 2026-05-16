@@ -248,6 +248,10 @@ templ HistoryTable() {
 					<span class="text-sm text-gray-300">🚫 Admin Unkeep</span>
 				</label>
 				<label class="flex items-center space-x-3 p-2 hover:bg-gray-700 rounded cursor-pointer transition-colors">
+					<input type="checkbox" value="force_sweep" class="event-type-checkbox w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"/>
+					<span class="text-sm text-gray-300">⚡ Force Sweep</span>
+				</label>
+				<label class="flex items-center space-x-3 p-2 hover:bg-gray-700 rounded cursor-pointer transition-colors">
 					<input type="checkbox" value="not_found_anymore" class="event-type-checkbox w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"/>
 					<span class="text-sm text-gray-300">❓ Not Found</span>
 				</label>
@@ -615,6 +619,7 @@ templ HistoryScript() {
 				'keep_forever': '<span class="event-badge bg-indigo-900 text-indigo-200">♾️ Keep Forever</span>',
 				'admin_keep': '<span class="event-badge bg-cyan-900 text-cyan-200">👑 Admin Keep</span>',
 				'admin_unkeep': '<span class="event-badge bg-orange-900 text-orange-200">🚫 Admin Unkeep</span>',
+				'force_sweep': '<span class="event-badge bg-orange-900 text-orange-200">⚡ Force Sweep</span>',
 				'deleted': '<span class="event-badge bg-red-900 text-red-200">🗑️ Deleted</span>',
 				'request_created': '<span class="event-badge bg-purple-900 text-purple-200">📝 Request Created</span>',
 				'request_approved': '<span class="event-badge bg-green-900 text-green-200">✅ Request Approved</span>',
@@ -642,6 +647,8 @@ templ HistoryScript() {
 					return 'Media item was kept by an admin';
 				case 'admin_unkeep':
 					return 'Media item was marked as unkeepable by an admin';
+				case 'force_sweep':
+					return 'Media item was queued for deletion on the next cleanup run by an admin';
 				case 'deleted':
 					return 'Media item was deleted from the system';
 				case 'request_created':

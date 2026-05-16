@@ -951,8 +951,8 @@ func AdminKeepRequestGridScript() templ.ComponentScript {
 
 func AdminMediaGridScript() templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_AdminMediaGridScript_f26c`,
-		Function: `function __templ_AdminMediaGridScript_f26c(){class AdminMediaGridManager extends MediaGridManager {
+		Name: `__templ_AdminMediaGridScript_a9cf`,
+		Function: `function __templ_AdminMediaGridScript_a9cf(){class AdminMediaGridManager extends MediaGridManager {
 		constructor(containerId, options = {}) {
 			super(containerId, options);
 		}
@@ -1047,6 +1047,11 @@ func AdminMediaGridScript() templ.ComponentScript {
 				} else if (target.classList.contains('delete-btn')) {
 					const originalContent = this.setButtonLoading(target, 'Sweeping...');
 					this.handleItemAction(item.id, 'sweep', div).catch(() => {
+						this.resetButton(target, originalContent);
+					});
+				} else if (target.classList.contains('force-sweep-btn')) {
+					const originalContent = this.setButtonLoading(target, 'Queueing...');
+					this.handleItemAction(item.id, 'force-sweep', div).catch(() => {
 						this.resetButton(target, originalContent);
 					});
 				}
@@ -1187,6 +1192,19 @@ func AdminMediaGridScript() templ.ComponentScript {
 									</svg>
 									Sweep
 								</button>
+								<button
+									id="force-sweep-desktop-${item.id}"
+									data-media-id="${item.id}"
+									class="admin-action-btn force-sweep-btn w-full inline-flex items-center justify-center px-3 py-2 rounded-lg font-medium transition-colors duration-200 text-sm"
+									style="background-color: #ea580c; color: white;"
+									onmouseover="this.style.backgroundColor='#c2410c'"
+									onmouseout="this.style.backgroundColor='#ea580c'"
+								>
+									<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+									</svg>
+									Force Sweep
+								</button>
 							</div>
 						</div>
 					</div>
@@ -1295,6 +1313,19 @@ func AdminMediaGridScript() templ.ComponentScript {
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
 										</svg>
 										Sweep
+									</button>
+									<button
+										id="force-sweep-mobile-${item.id}"
+										data-media-id="${item.id}"
+										class="admin-action-btn force-sweep-btn flex-1 inline-flex items-center justify-center px-2 py-2 rounded-lg font-medium transition-colors duration-200 text-xs"
+										style="background-color: #ea580c; color: white;"
+										onmouseover="this.style.backgroundColor='#c2410c'"
+										onmouseout="this.style.backgroundColor='#ea580c'"
+									>
+										<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+										</svg>
+										Force
 									</button>
 								</div>
 							</div>
@@ -1414,6 +1445,12 @@ func AdminMediaGridScript() templ.ComponentScript {
 						showProgress: true
 					});
 					break;
+				case 'force-sweep':
+					apiPromise = window.makeApiRequestEnhanced(` + "`" + `/admin/api/media/${mediaId}/force-sweep` + "`" + `, {
+						method: 'POST',
+						showProgress: true
+					});
+					break;
 				default:
 					console.warn('Unknown action:', action);
 					return Promise.resolve();
@@ -1425,7 +1462,8 @@ func AdminMediaGridScript() templ.ComponentScript {
 					const actionText = {
 						'keep': 'marked as keep',
 						'keep-forever': 'protected forever',
-						'sweep': 'marked for deletion'
+						'sweep': 'marked for deletion',
+						'force-sweep': 'queued for force sweep'
 					}[action];
 					if (window.showToast) {
 						window.showToast(` + "`" + `Media ${actionText} successfully` + "`" + `, 'success');
@@ -1441,6 +1479,9 @@ func AdminMediaGridScript() templ.ComponentScript {
 							animationType = 'fly-up';
 							break;
 						case 'sweep':
+							animationType = 'swipe-left';
+							break;
+						case 'force-sweep':
 							animationType = 'swipe-left';
 							break;
 						default:
@@ -1583,8 +1624,8 @@ func AdminMediaGridScript() templ.ComponentScript {
 		}
 	});
 }`,
-		Call:       templ.SafeScript(`__templ_AdminMediaGridScript_f26c`),
-		CallInline: templ.SafeScriptInline(`__templ_AdminMediaGridScript_f26c`),
+		Call:       templ.SafeScript(`__templ_AdminMediaGridScript_a9cf`),
+		CallInline: templ.SafeScriptInline(`__templ_AdminMediaGridScript_a9cf`),
 	}
 }
 

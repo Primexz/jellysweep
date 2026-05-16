@@ -132,6 +132,17 @@ func (e *Engine) CreateAdminUnkeepEvent(ctx context.Context, adminID uint, media
 	return e.db.CreateHistoryEvent(ctx, event)
 }
 
+// CreateForceSweepEvent creates a history event when an admin queues media for sweeping.
+func (e *Engine) CreateForceSweepEvent(ctx context.Context, adminID uint, media *database.Media) error {
+	event := database.HistoryEvent{
+		MediaID:   media.ID,
+		EventType: database.HistoryEventForceSweep,
+		UserID:    lo.ToPtr(adminID),
+	}
+
+	return e.db.CreateHistoryEvent(ctx, event)
+}
+
 // CreateNotFoundAnymoreEvent creates a history event when a media item is not found anymore.
 func (e *Engine) CreateNotFoundAnymoreEvent(ctx context.Context, media *database.Media) error {
 	event := database.HistoryEvent{

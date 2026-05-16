@@ -153,6 +153,7 @@ func (s *Server) setupAdminRoutes() {
 	adminAPI.POST("/keep-requests/:id/decline", h.DeclineKeepRequest)
 	adminAPI.POST("/media/:id/keep", h.MarkMediaAsProtected)
 	adminAPI.POST("/media/:id/delete", h.MarkMediaAsUnkeepable)
+	adminAPI.POST("/media/:id/force-sweep", h.ForceSweepMedia)
 	adminAPI.POST("/media/:id/keep-forever", h.MarkMediaAsKeepForever)
 
 	adminAPI.GET("/keep-requests", h.GetKeepRequests)

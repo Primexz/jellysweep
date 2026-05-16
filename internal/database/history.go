@@ -28,6 +28,8 @@ const (
 	HistoryEventAdminKeep HistoryEventType = "admin_keep"
 	// HistoryEventAdminUnkeep indicates a media item was marked as unkeepable by an admin.
 	HistoryEventAdminUnkeep HistoryEventType = "admin_unkeep"
+	// HistoryEventForceSweep indicates a media item was queued for deletion by an admin.
+	HistoryEventForceSweep HistoryEventType = "force_sweep"
 	// HistoryEventDeleted indicates a media item was deleted.
 	HistoryEventDeleted HistoryEventType = "deleted"
 	// HistoryEventRequestCreated indicates a keep request was created.

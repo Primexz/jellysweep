@@ -149,6 +149,29 @@ func (h *AdminHandler) MarkMediaAsUnkeepable(c *gin.Context) {
 	jsonSuccess(c, "Media marked for deletion successfully")
 }
 
+// ForceSweepMedia queues a media item for deletion on the next cleanup run.
+func (h *AdminHandler) ForceSweepMedia(c *gin.Context) {
+	user := getUser(c)
+	if user == nil {
+		return
+	}
+
+	mediaIDVal := c.Param("id")
+	mediaID, err := parseUintParam(mediaIDVal)
+	if err != nil {
+		jsonError(c, http.StatusBadRequest, "Invalid media ID")
+		return
+	}
+
+	err = h.engine.ForceSweepMedia(c.Request.Context(), mediaID, user.ID)
+	if err != nil {
+		jsonError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	jsonSuccess(c, "Media queued for force sweep successfully")
+}
+
 // MarkMediaAsKeepForever removes the media item from the database.
 // It also adds a "jellysweep-ignore" tag to the media item in Sonarr/Radarr to prevent it from being re-added.
 func (h *AdminHandler) MarkMediaAsKeepForever(c *gin.Context) {

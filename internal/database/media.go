@@ -168,6 +168,21 @@ func (c *Client) MarkMediaAsUnkeepable(ctx context.Context, mediaID uint) error 
 	return nil
 }
 
+func (c *Client) ForceSweepMedia(ctx context.Context, mediaID uint, deleteAt time.Time) error {
+	result := c.db.WithContext(ctx).Model(&Media{}).
+		Where("id = ?", mediaID).
+		Updates(map[string]any{
+			"default_delete_at": deleteAt,
+			"protected_until":   nil,
+			"unkeepable":        true,
+		})
+	if result.Error != nil {
+		log.Error("failed to force sweep media", "error", result.Error)
+		return result.Error
+	}
+	return nil
+}
+
 func (c *Client) DeleteMediaItem(ctx context.Context, media *Media) error {
 	err := c.db.WithContext(ctx).Model(&Media{}).
 		Where("id = ?", media.ID).
