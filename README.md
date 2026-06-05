@@ -76,13 +76,14 @@ If one of the filters is not met, the item will be skipped and not marked for de
 
 Filters can be configured per library and include:
 
-| Filter                   | Description                                                                      |
-| ------------------------ | -------------------------------------------------------------------------------- |
-| `content_age_threshold`  | Minimum age of the content in days                                               |
-| `last_stream_threshold`  | Minimum days since the content was last streamed                                 |
-| `content_size_threshold` | Minimum size of the content in bytes (0 = no minimum)                            |
-| `tunarr_enabled`         | Whether to protect items used by Tunarr channels (requires Tunarr configuration) |
-| `exclude_tags`           | List of Sonarr/Radarr tags that exclude content from deletion                    |
+| Filter                          | Description                                                                      |
+| ------------------------------- | -------------------------------------------------------------------------------- |
+| `content_age_threshold`         | Minimum age of the content in days                                               |
+| `last_stream_threshold`         | Minimum days since the content was last streamed                                 |
+| `content_size_threshold`        | Minimum size of the content in bytes (0 = no minimum)                            |
+| `tunarr_enabled`                | Whether to protect items used by Tunarr channels (requires Tunarr configuration) |
+| `only_unrequested`              | Only accept media that has no requester in Jellyseerr                            |
+| `exclude_tags`                  | List of Sonarr/Radarr tags that exclude content from deletion                    |
 
 > [!IMPORTANT]
 > Once a media item is marked for deletion, it wont go through the filters again. Filter changes will only affect new items that are being considered for deletion.
@@ -543,6 +544,7 @@ libraries:
       last_stream_threshold: 90         # Last watched at least 90 days ago
       content_size_threshold: 1073741824  # 1GB minimum (0 = no minimum)
       tunarr_enabled: true              # Protect items used by Tunarr channels (requires tunarr config)
+      only_unrequested: false           # Only mark media without a Jellyseerr requester
       exclude_tags:
         - "jellysweep-exclude"
         - "keep"

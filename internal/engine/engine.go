@@ -23,6 +23,7 @@ import (
 	"github.com/jon4hz/jellysweep/internal/filter"
 	agefilter "github.com/jon4hz/jellysweep/internal/filter/age_filter"
 	databasefilter "github.com/jon4hz/jellysweep/internal/filter/database_filter"
+	requesterfilter "github.com/jon4hz/jellysweep/internal/filter/requester_filter"
 	seriesfilter "github.com/jon4hz/jellysweep/internal/filter/series_filter"
 	sizefilter "github.com/jon4hz/jellysweep/internal/filter/size_filter"
 	streamfilter "github.com/jon4hz/jellysweep/internal/filter/stream_filter"
@@ -120,6 +121,11 @@ func New(cfg *config.Config, db database.DB, initialDBMigration bool) (*Engine, 
 		log.Warn("Radarr configuration is missing, some features will be disabled")
 	}
 
+	var jellyseerrClient *jellyseerr.Client
+	if cfg.Jellyseerr != nil {
+		jellyseerrClient = jellyseerr.New(cfg.Jellyseerr)
+	}
+
 	filterList := []filter.Filterer{
 		databasefilter.New(db),
 		seriesfilter.New(cfg),
@@ -127,6 +133,7 @@ func New(cfg *config.Config, db database.DB, initialDBMigration bool) (*Engine, 
 		sizefilter.New(cfg),
 		agefilter.New(cfg, db, sonarrClient, radarrClient),
 		streamfilter.New(cfg, statsClient),
+		requesterfilter.New(cfg, jellyseerrClient),
 	}
 
 	if cfg.Tunarr != nil {
@@ -139,11 +146,6 @@ func New(cfg *config.Config, db database.DB, initialDBMigration bool) (*Engine, 
 	}
 
 	filters := filter.New(filterList...)
-
-	var jellyseerrClient *jellyseerr.Client
-	if cfg.Jellyseerr != nil {
-		jellyseerrClient = jellyseerr.New(cfg.Jellyseerr)
-	}
 
 	// Initialize email notification service
 	var emailService *email.NotificationService

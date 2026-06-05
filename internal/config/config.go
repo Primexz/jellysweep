@@ -274,6 +274,8 @@ type FilterConfig struct {
 	ExcludeTags []string `yaml:"exclude_tags" mapstructure:"exclude_tags"`
 	// TunarrEnabled enables the Tunarr filter for this library to protect items used in Tunarr channels.
 	TunarrEnabled bool `yaml:"tunarr_enabled" mapstructure:"tunarr_enabled"`
+	// OnlyUnrequested only marks media without a Jellyseerr requester as eligible for cleanup.
+	OnlyUnrequested bool `yaml:"only_unrequested" mapstructure:"only_unrequested"`
 }
 
 // DiskUsageThreshold holds the disk usage thresholds for cleanup.
